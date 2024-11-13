@@ -1,0 +1,12 @@
+ALGORITHM:
+BEGIN
+    read Header record
+    verify program name and length read first Text record
+    while record type != 'E' do
+        begin
+        (if object code is in character form, convert into internal representation)
+        move object code to specified location in memory
+        read next object program record
+    end
+        jump to address specified in End record
+END
