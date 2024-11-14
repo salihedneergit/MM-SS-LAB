@@ -1,0 +1,47 @@
+ALGORITHM:
+START
+    Prompt user to enter the actual starting address Read starting address (start) from user
+    Open "input.txt" in read mode as fp1
+    Open "output.txt" in write mode as fp2
+    Write header information to output file
+    READ first line of input from fp1 into variable 'input' 
+    WHILE 'input' is not "E" (End record) DO 
+        IF 'input' is "H" (Header record) THEN
+            READ program name (pn), starting address (add), and program length (length) from fp1    
+            READ next line of input from fp1 into 'input' 
+        END IF
+        IF 'input' is "T" (Text record) THEN
+            READ address (address) and text length (tlen) from fp1 
+            READ bitmask (bitmask) from fp1
+            Adjust 'address' by adding 'start' to it
+            CONVERT bitmask to binary format and store in 'bit'
+            SET length of 'bit' to len (limit to 10 if greater than 10)
+            FOR i = 0 to len - 1 DO
+                READ opcode and address from fp1 
+                SET relocbit = bit[i]
+                IF relocbit is '0' THEN
+                    actualadd = address (no relocation needed)
+                ELSE
+                    actualadd = address + start (relocation needed)
+                WRITE address, opcode, and actualadd to fp2
+                Increment address by 3 (for next instruction slot) 
+            END FOR
+            READ next line from fp1 into 'input'
+        END IF
+    ENDWHILE
+    Write footer line to output file
+    Close files fp1 and fp2
+    Print contents of "output.txt" to console:
+        Open "output.txt" in read mode as fp2
+        WHILE not end of file (EOF) in fp2
+            Read each character from fp2 and print to console
+        ENDWHILE
+    Close fp2
+    END
+
+PROCEDURE CONVERT(h) 
+    Initialize 'bit' as an empty string 
+    FOR each character in 'h'
+        Convert hexadecimal character to its binary equivalent and append to 'bit' 
+    END FOR
+END PROCEDURE

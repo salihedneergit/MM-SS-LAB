@@ -1,0 +1,56 @@
+
+Algorithm (Pass 2):
+
+BEGIN
+
+1. READ the first input line (from intermediate file).
+2. IF OPCODE = 'START' THEN
+   - BEGIN
+     - WRITE listing line.
+     - READ the next input line.
+   - END (if START)
+
+3. WRITE Header record to object program.
+4. INITIALIZE first Text record.
+
+5. WHILE OPCODE != 'END' DO
+   - BEGIN
+     - IF this is not a comment line THEN
+       - BEGIN
+         - SEARCH OPTAB for OPCODE.
+         - IF found THEN
+           - BEGIN
+             - IF there is a symbol in the OPERAND field THEN
+               - BEGIN
+                 - SEARCH SYMTAB for OPERAND.
+                 - IF found THEN
+                   - STORE symbol value as operand address.
+                 - ELSE
+                   - STORE 0 as operand address.
+                   - SET error flag (undefined symbol).
+               - END (if symbol)
+             - ELSE
+               - STORE 0 as operand address.
+             - ASSEMBLE the object code instruction.
+           - END (if opcode found)
+         - ELSE IF OPCODE = 'BYTE' or 'WORD' THEN
+           - CONVERT constant to object code.
+
+         - IF object code will not fit into the current Text record THEN
+           - BEGIN
+             - WRITE Text record to object program.
+             - INITIALIZE new Text record.
+           - END
+
+         - ADD object code to Text record.
+       - END (if not comment)
+
+     - WRITE listing line.
+     - READ the next input line.
+   - END (while not END)
+
+6. WRITE last Text record to object program.
+7. WRITE End record to object program.
+8. WRITE last listing line.
+
+END (Pass 2)

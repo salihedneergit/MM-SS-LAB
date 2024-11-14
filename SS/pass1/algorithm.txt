@@ -1,0 +1,52 @@
+Algorithm:
+BEGIN
+1. READ the first input line.
+2. IF OPCODE = 'START' THEN
+   - BEGIN
+     - SAVE #[OPERAND] as starting address.
+     - INITIALIZE LOCCTR to starting address.
+     - WRITE line to intermediate file.
+     - READ the next input line.
+   - END (if START)
+3. ELSE
+   - INITIALIZE LOCCTR to 0.
+
+4. WHILE OPCODE != 'END' DO
+   - BEGIN
+     - IF this is not a comment line THEN
+       - BEGIN
+         - IF there is a symbol in the LABEL field THEN
+           - BEGIN
+             - SEARCH SYMTAB for LABEL.
+             - IF found THEN
+               - SET error flag (duplicate symbol).
+             - ELSE
+               - INSERT (LABEL, LOCCTR) into SYMTAB.
+           - END (if symbol)
+
+         - SEARCH OPTAB for OPCODE.
+         - IF found THEN
+           - ADD 3 (instruction length) to LOCCTR.
+         - ELSE IF OPCODE = 'WORD' THEN
+           - ADD 3 to LOCCTR.
+         - ELSE IF OPCODE = 'RESW' THEN
+           - ADD 3 * #[OPERAND] to LOCCTR.
+         - ELSE IF OPCODE = 'RESB' THEN
+           - ADD #[OPERAND] to LOCCTR.
+         - ELSE IF OPCODE = 'BYTE' THEN
+           - BEGIN
+             - FIND length of constant in bytes.
+             - ADD length to LOCCTR.
+           - END (if BYTE)
+         - ELSE
+           - SET error flag (invalid operation code).
+       - END (if not a comment)
+
+     - WRITE line to intermediate file.
+     - READ the next input line.
+   - END (while not END)
+
+5. WRITE last line to intermediate file.
+6. SAVE (LOCCTR - starting address) as program length.
+
+END (Pass 1)
